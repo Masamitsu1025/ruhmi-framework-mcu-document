@@ -1,8 +1,8 @@
 # mkdocs.yml
-site_name: ruhmi-framework-mcu-test
-site_url: https://username.github.io/repository-name/
+site_name: ruhmi-framework-mcu-document
+site_url: https://github.com/Masamitsu1025/ruhmi-framework-mcu-document
 site_description: Project documentation
-site_author: Your Name
+site_author: Masamitsu Muratani
 
 theme:
   name: material
