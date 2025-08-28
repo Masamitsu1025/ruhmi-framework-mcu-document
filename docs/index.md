@@ -1,6 +1,6 @@
-# Welcome to MkDocs
+# Welcome to ruhmi-framework-mcu
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+The main repository is [ruhmi-framework-mcu](https://github.com/Masamitsu1025/ruhmi-framework-mcu-document/tree/main).
 
 ## Commands
 
@@ -29,6 +29,6 @@ This is the homepage of your documentation.
 
 ## Quick Links
 
-- [Getting Started](getting-started.md)
-- [User Guide](user-guide.md)
-- [API Reference](api-reference.md)
+- [Installation guide](..\..\install\README.md)
+- [Sample script for CLI](..\scripts\README.md)
+- [API Reference](mera_api.md)

@@ -1,6 +1,6 @@
 # mkdocs.yml
-site_name: ruhmi-framework-mcu-document
-site_url: https://github.com/Masamitsu1025/ruhmi-framework-mcu-document
+site_name: ruhmi-framework-mcu-test
+site_url: https://masamitsu1025.github.io/ruhmi-framework-mcu-document/
 site_description: Project documentation
 site_author: Masamitsu Muratani
 
