@@ -1,0 +1,37 @@
+# mkdocs.yml
+site_name: ruhmi-framework-mcu-test
+site_url: https://username.github.io/repository-name/
+site_description: Project documentation
+site_author: Your Name
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - search.suggest         # Enable search suggestions
+    - search.highlight       # Highlight search terms
+    - content.code.copy      # Copy button for code blocks
+    - content.tabs.link      # Linkable content tabs
+    - content.action.edit    # Show "Edit this page" button
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - User Guide:
+      - Overview: user-guide/overview.md
+      - Installation: user-guide/installation.md
+      - Configuration: user-guide/configuration.md
+  - API Reference: api-reference.md
+  - FAQ: faq.md
+
