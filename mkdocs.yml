@@ -27,11 +27,8 @@ theme:
     - content.action.edit    # Show "Edit this page" button
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - User Guide:
-      - Overview: user-guide/overview.md
-      - Installation: user-guide/installation.md
-      - Configuration: user-guide/configuration.md
+  - Installation guide: ..\install\README.md
+  - Sample scripts for CLI: ..\scripts\README.md
   - API Reference: api-reference.md
   - FAQ: faq.md
 
