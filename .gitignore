@@ -1,0 +1,49 @@
+# -----------------------------
+# MkDocs build artifacts
+# -----------------------------
+# MkDocs build output (generated site, not source)
+site/
+
+# -----------------------------
+# Python
+# -----------------------------
+# Virtual environments
+.venv/
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# -----------------------------
+# OS / Editor files
+# -----------------------------
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# VS Code / JetBrains
+.vscode/
+.idea/
+
+# -----------------------------
+# GitHub / CI
+# -----------------------------
+# Ignore local secrets
+secrets*.yml
+.env
