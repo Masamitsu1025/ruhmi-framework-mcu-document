@@ -17,17 +17,20 @@ $outDir = "docs"
 
 Write-Host "Collecting README*.md files into '$outDir'..." -ForegroundColor Cyan
 
-# README*.md を探索（例: README.md, README_ja.md, README_en.md）
+# ルートディレクトリを取得（スクリプト実行時のカレント）
+$root = Get-Location
+
+# README*.md を探索
 Get-ChildItem -Recurse -File -Filter "README*.md" | ForEach-Object {
     $source = $_.FullName
 
-    # 相対パスを作成
-    $relPath = Resolve-Path -Relative $source
+    # ルートからの相対パスを計算
+    $relPath = Resolve-Path -Relative -Path $source -RelativeBase $root
 
-    # 出力先ファイル名を index.md に変換
-    # （README.md, README_ja.md, README_xxx.md → index.md）
-    $dest = Join-Path $outDir ($relPath -replace 'README.*\.md$', 'index.md' -replace '/', '\')
-    
+    # 出力先のパスを組み立て（README*.md → index.md）
+    $relFixed = $relPath -replace 'README.*\.md$', 'index.md'
+    $dest = Join-Path $outDir $relFixed
+
     # 出力先フォルダを作成
     New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
 
@@ -35,13 +38,14 @@ Get-ChildItem -Recurse -File -Filter "README*.md" | ForEach-Object {
     Copy-Item $source $dest -Force
     Write-Host "✓ Copied $relPath -> $dest" -ForegroundColor Green
 
-    # 同じフォルダ内の画像をコピー
+    # 同じフォルダ内の画像もコピー
     $imgDir = Split-Path $source
     Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg | ForEach-Object {
-        $imgRelPath = Resolve-Path -Relative $_.FullName
-        $imgDest = Join-Path $outDir ($imgRelPath -replace '/', '\')
+        $imgPath = $_.FullName
+        $imgRelPath = Resolve-Path -Relative -Path $imgPath -RelativeBase $root
+        $imgDest = Join-Path $outDir $imgRelPath
         New-Item -ItemType Directory -Force -Path (Split-Path $imgDest) | Out-Null
-        Copy-Item $_.FullName $imgDest -Force
+        Copy-Item $imgPath $imgDest -Force
         Write-Host "    → Copied image $imgRelPath" -ForegroundColor DarkGray
     }
 }
