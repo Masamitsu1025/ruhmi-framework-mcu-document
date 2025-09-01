@@ -1,5 +1,5 @@
 # mkdocs.yml
-site_name: ruhmi-framework-mcu-test
+site_name: ruhmi-framework-mcu-documents
 site_url: https://masamitsu1025.github.io/ruhmi-framework-mcu-document/
 site_description: Project documentation
 site_author: Masamitsu Muratani
@@ -9,7 +9,7 @@ theme:
   palette:
     - scheme: default
       primary: indigo
-      accent: amber
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -19,16 +19,22 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
   features:
+    - navigation.tabs.sticky
+    - navigation.sections
     - search.suggest         # Enable search suggestions
     - search.highlight       # Highlight search terms
     - content.code.copy      # Copy button for code blocks
     - content.tabs.link      # Linkable content tabs
     - content.action.edit    # Show "Edit this page" button
+
 nav:
   - Home: index.md
-  - Installation guide: ..\install\README.md
-  - Sample scripts for CLI: ..\scripts\README.md
-  - API Reference: api-reference.md
-  - FAQ: faq.md
+  - Installation guide: install\index.md
+  - How to scripts: scripts\index.md
+  - Handling optput source code: runtime_api.md
+  - API Reference: mera_api.md
+  - error list: error_list.md
+  - FAQ & Tips: faq.md
 

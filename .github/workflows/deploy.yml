@@ -1,28 +1,33 @@
-name: Deploy MkDocs to GitHub Pages
+name: Collect READMEs and Deploy with MkDocs
 
 on:
   push:
-    branches:
-      - main  # or master
+    branches: [ main ]
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest   # Windows ランナーを使用
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.x
+          python-version: "3.11"
 
       - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect READMEs into docs/
+        shell: pwsh
         run: |
-          pip install mkdocs-material
-          # Add other plugins if needed
+          ./scripts/collect-readmes.ps1 -Clean
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
+
