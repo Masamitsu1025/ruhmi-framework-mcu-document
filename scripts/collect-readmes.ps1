@@ -15,26 +15,27 @@
 # 出力先ディレクトリ
 $outDir = "docs"
 
-Write-Host "Collecting README.md files into '$outDir'..." -ForegroundColor Cyan
+Write-Host "Collecting README*.md files into '$outDir'..." -ForegroundColor Cyan
 
-# README.md を探索
-Get-ChildItem -Recurse -File -Filter "README.md" | ForEach-Object {
+# README*.md を探索（例: README.md, README_ja.md, README_en.md）
+Get-ChildItem -Recurse -File -Filter "README*.md" | ForEach-Object {
     $source = $_.FullName
 
     # 相対パスを作成
     $relPath = Resolve-Path -Relative $source
 
-    # 出力先パス（README.md → index.md に変換）
-    $dest = Join-Path $outDir ($relPath -replace '\\README\.md$', '\index.md' -replace '/', '\')
+    # 出力先ファイル名を index.md に変換
+    # （README.md, README_ja.md, README_xxx.md → index.md）
+    $dest = Join-Path $outDir ($relPath -replace 'README.*\.md$', 'index.md' -replace '/', '\')
     
     # 出力先フォルダを作成
     New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
 
-    # README.md をコピー
+    # README*.md をコピー
     Copy-Item $source $dest -Force
     Write-Host "✓ Copied $relPath -> $dest" -ForegroundColor Green
 
-    # 画像ファイルを同階層からコピー
+    # 同じフォルダ内の画像をコピー
     $imgDir = Split-Path $source
     Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg | ForEach-Object {
         $imgRelPath = Resolve-Path -Relative $_.FullName
