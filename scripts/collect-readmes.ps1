@@ -14,40 +14,56 @@
 
 # 出力先ディレクトリ
 $outDir = "docs"
+Write-Host "Collecting README*.md into '$outDir'..." -ForegroundColor Cyan
 
-Write-Host "Collecting README*.md files into '$outDir'..." -ForegroundColor Cyan
+# --- Gitリポジトリのルートを特定 ---
+$gitRoot = (git rev-parse --show-toplevel) 2>$null
+if (-not $gitRoot) { $gitRoot = (Get-Location).Path }  # git未使用なら現在地をルート扱い
 
-# ルートディレクトリを取得（スクリプト実行時のカレント）
-$root = Get-Location
+# PowerShell 7 には GetRelativePath があるが、5.1 互換のため関数を用意
+function Get-RelPath($base, $path) {
+  $baseUri   = [Uri]((Resolve-Path $base).ProviderPath + [IO.Path]::DirectorySeparatorChar)
+  $targetUri = [Uri]((Resolve-Path $path).ProviderPath)
+  $rel = $baseUri.MakeRelativeUri($targetUri).ToString()
+  # URI区切りをWindowsの区切りに
+  return [Uri]::UnescapeDataString($rel).Replace('/','\')
+}
 
-# README*.md を探索
-Get-ChildItem -Recurse -File -Filter "README*.md" | ForEach-Object {
-    $source = $_.FullName
+# 安全：先頭の "..\" や ".\" を潰す
+function Sanitize-Rel($rel) {
+  $r = $rel -replace '^[.\\\/]+',''
+  while ($r -like '..\*') { $r = $r.Substring(3) }  # 念のため防御
+  return $r
+}
 
-    # ルートからの相対パスを計算
-    $relPath = Resolve-Path -Relative -Path $source -RelativeBase $root
+# 対象: README*.md（README.md, README_ja.md など）
+Get-ChildItem -Path $gitRoot -Recurse -File -Filter "README*.md" | ForEach-Object {
+  $src = $_.FullName
 
-    # 出力先のパスを組み立て（README*.md → index.md）
-    $relFixed = $relPath -replace 'README.*\.md$', 'index.md'
-    $dest = Join-Path $outDir $relFixed
+  # ルートからの相対パス（.. を含まない形へ）
+  $rel = Get-RelPath $gitRoot $src
+  $rel = Sanitize-Rel $rel
 
-    # 出力先フォルダを作成
-    New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
+  # 出力先の相対パス（README*.md → index.md）
+  $relOut = ($rel -replace '(?i)README.*\.md$','index.md')
+  $dst = Join-Path $outDir $relOut
 
-    # README*.md をコピー
-    Copy-Item $source $dest -Force
-    Write-Host "✓ Copied $relPath -> $dest" -ForegroundColor Green
+  New-Item -ItemType Directory -Force -Path (Split-Path $dst) | Out-Null
+  Copy-Item $src $dst -Force
+  Write-Host "✓ $rel -> $dst" -ForegroundColor Green
 
-    # 同じフォルダ内の画像もコピー
-    $imgDir = Split-Path $source
-    Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg | ForEach-Object {
-        $imgPath = $_.FullName
-        $imgRelPath = Resolve-Path -Relative -Path $imgPath -RelativeBase $root
-        $imgDest = Join-Path $outDir $imgRelPath
-        New-Item -ItemType Directory -Force -Path (Split-Path $imgDest) | Out-Null
-        Copy-Item $imgPath $imgDest -Force
-        Write-Host "    → Copied image $imgRelPath" -ForegroundColor DarkGray
+  # 同階層の画像もコピー（必要に応じて拡張子を追加）
+  $imgDir = Split-Path $src
+  Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg,*.webp,*.bmp,*.ico |
+    ForEach-Object {
+      $imgRel = Get-RelPath $gitRoot $_.FullName
+      $imgRel = Sanitize-Rel $imgRel
+      $imgDst = Join-Path $outDir $imgRel
+      New-Item -ItemType Directory -Force -Path (Split-Path $imgDst) | Out-Null
+      Copy-Item $_.FullName $imgDst -Force
+      Write-Host "    → image $imgRel" -ForegroundColor DarkGray
     }
 }
+
 
 Write-Host "All READMEs collected under '$outDir' 🎉" -ForegroundColor Cyan
