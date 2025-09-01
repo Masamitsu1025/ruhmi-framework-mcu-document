@@ -1,8 +1,7 @@
 # mkdocs.yml
 site_name: ruhmi-framework-mcu-documents
 site_url: https://Masamitsu1025.github.io/ruhmi-framework-mcu-document/
-repo_url: https://github.com/Masamitsu1025/ruhmi-framework-mcu-document
-edit_uri: edit/main/docs/site_description: Project documentation
+site_description: Comprehensive technical documentation for My Project
 site_author: Masamitsu Muratani
 
 theme:
