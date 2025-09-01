@@ -26,7 +26,7 @@ jobs:
       - name: Collect READMEs into docs/
         shell: pwsh
         run: |
-          .\scripts\collect-readmes.ps1 -Clean
+        powershell -ExecutionPolicy Bypass -File ".\scripts\collect-readmes.ps1" -Clean
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
