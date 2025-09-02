@@ -45,10 +45,29 @@ jobs:
       #   - linkcheck:
       #       fail_on_warning: true
 
-      - name: Debug: show tree (optional)
-        shell: pwsh
-        run: |
-          Get-ChildItem -Recurse -File | Select-Object -ExpandProperty FullName | Out-String | Write-Host
+- name: Debug: show tree (robust)
+  shell: pwsh
+  run: |
+    $ErrorActionPreference = 'Continue'
+    Write-Host "PWD before: $PWD"
+    if ($env:GITHUB_WORKSPACE) { Set-Location $env:GITHUB_WORKSPACE }
+    Write-Host "PWD after : $PWD"
+
+    # まず主要ファイルの存在確認
+    Write-Host "mkdocs.yml exists? " (Test-Path "mkdocs.yml")
+    Write-Host "scripts\\collect-readmes.ps1 exists? " (Test-Path "scripts\\collect-readmes.ps1")
+    Write-Host "docs exists? " (Test-Path "docs")
+
+    # 失敗しにくい列挙（エラーは無視して続行）
+    Get-ChildItem -Path . -Recurse -Force -File -ErrorAction SilentlyContinue |
+      ForEach-Object { $_.FullName }
+
+    # 直近の PowerShell エラー内容も出力（あれば）
+    if ($Error.Count -gt 0) {
+      Write-Host "---- Captured errors ----" -ForegroundColor Yellow
+      $Error | Select-Object -First 5 | ForEach-Object { $_.ToString() | Write-Host }
+    }
+
 
       - name: Collect READMEs into docs/
         shell: pwsh
