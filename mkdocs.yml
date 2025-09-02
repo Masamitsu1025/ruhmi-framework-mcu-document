@@ -21,8 +21,8 @@ theme:
         name: Switch to light mode
 
   features:
-    - navigation.tabs.sticky
-    - navigation.sections
+#    - navigation.tabs.sticky
+#    - navigation.sections
     - search.suggest         # Enable search suggestions
     - search.highlight       # Highlight search terms
     - content.code.copy      # Copy button for code blocks
