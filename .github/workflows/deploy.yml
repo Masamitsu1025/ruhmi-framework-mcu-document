@@ -3,32 +3,63 @@ name: Collect READMEs and Deploy with MkDocs
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: write   # gh-pages へ push するために必須
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: windows-latest   # Windows ランナーを使用
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        # サブモジュールに README がある場合は↓を有効化
+        # with:
+        #   submodules: true
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
+      - name: Cache pip (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      # 任意: mkdocs-linkcheck を使うなら mkdocs.yml に plugins を追加してください
+      # plugins:
+      #   - search
+      #   - linkcheck:
+      #       fail_on_warning: true
+
+      - name: Debug: show tree (optional)
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -File | Select-Object -ExpandProperty FullName | Out-String | Write-Host
 
       - name: Collect READMEs into docs/
         shell: pwsh
         run: |
-         Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           & "scripts\collect-readmes.ps1" -Clean
+
+      - name: Build (optional)
+        run: mkdocs build --strict
+        # --strict: 設定/リンク等の警告をエラー化（不要なら外してください）
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
-
+        

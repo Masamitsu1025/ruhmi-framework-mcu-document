@@ -1,69 +1,101 @@
-<#
-.SYNOPSIS
-  Collect all README.md files from the repository and copy them into docs/ for MkDocs.
+<# 
+  collect-readmes.ps1
+  - README*.md を docs/ 配下へ収集して index.md にリネーム
+  - 同階層の画像もコピー（相対リンク維持）
+  - コンテンツ内の "README*.md" へのリンクを "index.md" に置換（Markdown/HTML両対応）
+  - 既存 docs/ を消してから再生成したい時は -Clean を付ける
 
-.DESCRIPTION
-  - Recursively finds all README.md files
-  - Renames them to index.md (so URLs look like /project/, not /project/README/)
-  - Copies associated image files (png, jpg, jpeg, gif, svg) from the same directory
-  - Preserves folder structure under docs/
-
-.EXAMPLE
-  PS> .\collect-readmes.ps1
+  使い方例:
+    pwsh ./collect-readmes.ps1              # 差分コピー
+    pwsh ./collect-readmes.ps1 -Clean       # docs/ を掃除してから再生成
 #>
 
-# 出力先ディレクトリ
-$outDir = "docs"
-Write-Host "Collecting README*.md into '$outDir'..." -ForegroundColor Cyan
+[CmdletBinding()]
+param(
+  [string]$OutDir = "docs",
+  [switch]$Clean
+)
 
-# --- Gitリポジトリのルートを特定 ---
+$ErrorActionPreference = 'Stop'
+
+# --- Git ルートを特定（なければカレント） ---
 $gitRoot = (git rev-parse --show-toplevel) 2>$null
-if (-not $gitRoot) { $gitRoot = (Get-Location).Path }  # git未使用なら現在地をルート扱い
+if (-not $gitRoot) { $gitRoot = (Get-Location).Path }
 
-# PowerShell 7 には GetRelativePath があるが、5.1 互換のため関数を用意
-function Get-RelPath($base, $path) {
+# 相対パス作成（..\ を含まないよう統一）
+function Get-Rel($base, $path) {
   $baseUri   = [Uri]((Resolve-Path $base).ProviderPath + [IO.Path]::DirectorySeparatorChar)
   $targetUri = [Uri]((Resolve-Path $path).ProviderPath)
-  $rel = $baseUri.MakeRelativeUri($targetUri).ToString()
-  # URI区切りをWindowsの区切りに
-  return [Uri]::UnescapeDataString($rel).Replace('/','\')
+  $rel = [Uri]::UnescapeDataString($baseUri.MakeRelativeUri($targetUri).ToString())
+  return $rel.Replace('/','\')
 }
 
-# 安全：先頭の "..\" や ".\" を潰す
-function Sanitize-Rel($rel) {
-  $r = $rel -replace '^[.\\\/]+',''
-  while ($r -like '..\*') { $r = $r.Substring(3) }  # 念のため防御
-  return $r
+# 出力初期化
+if ($Clean -and (Test-Path $OutDir)) {
+  Write-Host "Cleaning '$OutDir'..." -ForegroundColor Yellow
+  Remove-Item -Recurse -Force $OutDir
 }
+New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
-# 対象: README*.md（README.md, README_ja.md など）
-Get-ChildItem -Path $gitRoot -Recurse -File -Filter "README*.md" | ForEach-Object {
+Write-Host "Collecting README*.md into '$OutDir'..." -ForegroundColor Cyan
+
+# 対象: README*.md（README.md, README_ja.md など大文字小文字不問）
+Get-ChildItem -Path $gitRoot -Recurse -File -Include README*.md | ForEach-Object {
   $src = $_.FullName
+  $rel = Get-Rel $gitRoot $src
 
-  # ルートからの相対パス（.. を含まない形へ）
-  $rel = Get-RelPath $gitRoot $src
-  $rel = Sanitize-Rel $rel
-
-  # 出力先の相対パス（README*.md → index.md）
+  # 出力先パス（README*.md → index.md）
   $relOut = ($rel -replace '(?i)README.*\.md$','index.md')
-  $dst = Join-Path $outDir $relOut
+  $dst = Join-Path $OutDir $relOut
+  $dstDir = Split-Path $dst -Parent
+  New-Item -ItemType Directory -Force -Path $dstDir | Out-Null
 
-  New-Item -ItemType Directory -Force -Path (Split-Path $dst) | Out-Null
-  Copy-Item $src $dst -Force
-  Write-Host "✓ $rel -> $dst" -ForegroundColor Green
+  # --- 本文を読み込み、リンク置換して書き出し ---
+  # 置換対象例：
+  #   [text](README.md) / [text](./README_en.md) / href="README_ja.md"
+  $content = Get-Content -Raw -Path $src
 
-  # 同階層の画像もコピー（必要に応じて拡張子を追加）
-  $imgDir = Split-Path $src
-  Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg,*.webp,*.bmp,*.ico |
-    ForEach-Object {
-      $imgRel = Get-RelPath $gitRoot $_.FullName
-      $imgRel = Sanitize-Rel $imgRel
-      $imgDst = Join-Path $outDir $imgRel
-      New-Item -ItemType Directory -Force -Path (Split-Path $imgDst) | Out-Null
-      Copy-Item $_.FullName $imgDst -Force
-      Write-Host "    → image $imgRel" -ForegroundColor DarkGray
-    }
+  # Markdownリンク [..](..README*.md..)
+  $content = [regex]::Replace(
+    $content,
+    '(?xi)
+      (\]\()            # group1: リンク開始 "]("
+      (\.?\/)?          # group2: 先頭の "./" or ".\" (任意)
+      (README[\w\.\-]*\.md) # group3: README*.md
+      (?=(\)|\#|\?))    # 後読み: 直後に ) or # or ? が続く
+    ',
+    '${1}index.md'
+  )
+
+  # HTMLリンク <a href="README*.md">, <a href='./README_xx.md'>
+  $content = [regex]::Replace(
+    $content,
+    '(?xi)
+      (href=              # group1
+        ["'']             # 開始クオート
+      )
+      (\.?\/)?            # group2: 先頭の ./ など
+      (README[\w\.\-]*\.md) # group3
+      (["''])             # group4: 終了クオート
+    ',
+    '${1}index.md$4'
+  )
+
+  # 書き出し（UTF-8）
+  Set-Content -Path $dst -Value $content -Encoding UTF8 -NoNewline
+
+  Write-Host ("✓ {0} -> {1}" -f $rel, $dst) -ForegroundColor Green
+
+  # --- 同階層の画像をコピー（相対参照用） ---
+  $imgDir = Split-Path $src -Parent
+  Get-ChildItem $imgDir -File -Include *.png,*.jpg,*.jpeg,*.gif,*.svg,*.webp,*.bmp,*.ico | ForEach-Object {
+    $imgRel = Get-Rel $gitRoot $_.FullName
+    $imgDst = Join-Path $OutDir $imgRel
+    New-Item -ItemType Directory -Force -Path (Split-Path $imgDst) | Out-Null
+    Copy-Item $_.FullName $imgDst -Force
+    Write-Host "    → image $imgRel" -ForegroundColor DarkGray
+  }
 }
 
+Write-Host "Done." -ForegroundColor Cyan
 
-Write-Host "All READMEs collected under '$outDir' 🎉" -ForegroundColor Cyan

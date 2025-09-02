@@ -1,1 +1,3 @@
 mkdocs-material
+# 任意: リンク切れ検出を有効にするなら↓も追加
+mkdocs-linkcheck
