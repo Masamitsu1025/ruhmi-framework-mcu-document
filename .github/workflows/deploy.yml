@@ -26,7 +26,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Cache pip (Windows)
         uses: actions/cache@v3
@@ -43,7 +43,7 @@ jobs:
         shell: pwsh
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-          & "scripts\collect-readmes.ps1" -Clean
+          & "scripts\collect-readmes.ps1"
 
       - name: Build (optional)
         run: mkdocs build --strict
