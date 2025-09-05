@@ -12,11 +12,6 @@ concurrency:
   group: pages-deploy
   cancel-in-progress: true
 
-plugins:
-  - search
-  - linkcheck:          # ← プラグイン名は "linkcheck" でOK（エイリアス）
-      fail_on_warning: true   # 任意
-
 jobs:
   build:
     runs-on: windows-latest
