@@ -4,17 +4,6 @@ site_url: https://Masamitsu1025.github.io/ruhmi-framework-mcu-document/
 site_description: Comprehensive technical documentation for My Project
 site_author: Masamitsu Muratani
 
-plugins:
-   - search
-#   - linkcheck:
-#      fail_on_warning: true
-   - git-revision-date-localized:
-      enable_creation_date: true
-  - htmlproofer:
-      validate_external_urls: true
-      raise_error: true
-
-
 theme:
   name: material
   palette:
@@ -39,6 +28,16 @@ theme:
     - content.code.copy      # Copy button for code blocks
     - content.tabs.link      # Linkable content tabs
     - content.action.edit    # Show "Edit this page" button
+
+plugins:
+   - search
+#   - linkcheck:
+#      fail_on_warning: true
+   - git-revision-date-localized:
+      enable_creation_date: true
+  - htmlproofer:
+      validate_external_urls: true
+      raise_error: true
 
 nav:
   - Home: README.md
