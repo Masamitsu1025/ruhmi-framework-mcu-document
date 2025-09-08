@@ -6,10 +6,13 @@ site_author: Masamitsu Muratani
 
 plugins:
    - search
-   - linkcheck:
-      fail_on_warning: true
+#   - linkcheck:
+#      fail_on_warning: true
    - git-revision-date-localized:
       enable_creation_date: true
+  - htmlproofer:
+      validate_external_urls: true
+      raise_error: true
 
 
 theme:
