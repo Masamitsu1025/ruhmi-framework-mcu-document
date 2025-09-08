@@ -12,6 +12,9 @@ concurrency:
   group: pages-deploy
   cancel-in-progress: true
 
+plugins:
+  - search
+
 jobs:
   build:
     runs-on: windows-latest
