@@ -49,8 +49,8 @@ jobs:
 #      - name: Link check (markdown)
 #        run: python -m mkdocs_linkcheck docs --recurse --method get
 
-#      - name: Build (option)
-#        run: python -m mkdocs build --strict
+      - name: Build
+        run: python -m mkdocs build --strict
         # --strict: 設定/リンク等の警告をエラー化（不要なら外してください）
 
       - name: Deploy to GitHub Pages
