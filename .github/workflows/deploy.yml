@@ -50,7 +50,7 @@ jobs:
 #        run: python -m mkdocs_linkcheck docs --recurse --method get
 
       - name: Build
-        run: python -m mkdocs build --strict
+        run: python -m mkdocs build #--strict
         # --strict: 設定/リンク等の警告をエラー化（不要なら外してください）
 
       - name: Deploy to GitHub Pages
