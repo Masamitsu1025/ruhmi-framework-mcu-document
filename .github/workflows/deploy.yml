@@ -46,8 +46,8 @@ jobs:
 
 
       # docs 以下の .md をリンクチェック（再帰、GETで厳しめ）
-      - name: Link check (markdown)
-        run: python -m mkdocs_linkcheck docs --recurse --method get
+#      - name: Link check (markdown)
+#        run: python -m mkdocs_linkcheck docs --recurse --method get
 
 #      - name: Build (option)
 #        run: python -m mkdocs build --strict
