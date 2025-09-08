@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-          & "scripts\collect-readmes.ps1" -Clean 
+          & scripts\collect-readmes.ps1 -Clean 
 
 
       # docs 以下の .md をリンクチェック（再帰、GETで厳しめ）
