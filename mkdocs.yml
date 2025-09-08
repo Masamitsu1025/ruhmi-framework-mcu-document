@@ -35,9 +35,9 @@ theme:
     - content.action.edit    # Show "Edit this page" button
 
 nav:
-  - Home: index.md
-  - Installation guide: install\index.md
-  - How to scripts: scripts\index.md
+  - Home: readme.md
+  - Installation guide: install\readme.md
+  - How to scripts: scripts\readme.md
   - Handling optput source code: runtime_api.md
   - API Reference: mera_api.md
   - error list: error_list.md
