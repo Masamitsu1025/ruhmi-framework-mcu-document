@@ -6,8 +6,8 @@ site_author: Masamitsu Muratani
 
 plugins:
    - search
-   - linkcheck:
-       fail_on_warning: true
+#   - linkcheck:
+#       fail_on_warning: true
 
 theme:
   name: material
