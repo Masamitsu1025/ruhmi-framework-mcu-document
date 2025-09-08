@@ -38,13 +38,16 @@ jobs:
 
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-
-
       - name: Collect READMEs into docs/
         shell: pwsh
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           & "scripts\collect-readmes.ps1" -Clean 
+
+
+      # docs 以下の .md をリンクチェック（再帰、GETで厳しめ）
+      - name: Link check (markdown)
+        run: python -m mkdocs_linkcheck docs --recurse --method get
 
 #      - name: Build (option)
 #        run: python -m mkdocs build --strict
