@@ -51,5 +51,5 @@ jobs:
         # --strict: 設定/リンク等の警告をエラー化（不要なら外してください）
 
       - name: Deploy to GitHub Pages
-        run: python -m kdocs gh-deploy --force
+        run: python -m mkdocs gh-deploy --force
         
