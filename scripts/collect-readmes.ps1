@@ -10,8 +10,8 @@
 param(
   [string]$OutDir = "docs",
   [switch]$Clean,
-  [string[]]$ReadmePatterns = @("README*.md"),
-  [string[]]$ImagePatterns  = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico"),
+  [string[]]$ReadmePatterns = @("*.md"),   # ← ディレクトリ下にあるすべての*.md
+  [string[]]$ImagePatterns  = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico")
   [switch]$FixLinks = $true   # ← 追加: ディレクトリリンク→README.md 補完
 )
 
