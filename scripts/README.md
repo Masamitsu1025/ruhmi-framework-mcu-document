@@ -1,19 +1,38 @@
 ## Introduction
 
 The section introduces how to execute the model compilation with the sample scripts for each exmple case below.   
-* [Deploy models](# How-to-deploy-models)  
+* [Deploy models](#How-to-deploy-models)  
   - Deploy to CPU only   
-  - Deploy to CPU with Ethos U55 supported    
-* [Quantize and deploy models](# How-to-quantize-and-deploy-models)
+  - Deploy to CPU with NPU/Ethos U55 supported    
+* [Quantize and deploy models](#How-to-quantize-and-deploy-models)
   - Deploy to CPU only   
-  - Deploy to CPU with Ethos U55 supported    
+  - Deploy to CPU with NPU/Ethos U55 supported    
 The sample scripts are [here](../scripts/)
 
+You can run each script under the virtual environment showing the prompt like "(.venv) PS C:\work>".
+
+## Conversion options
+The introduced scripts here supports each option. You can use the script depending on the case below.
+![](../docs/material/conversion_options.gif)
+
+[NOTICE]
+Some options has NOT been supported yet. If you have seen the message like below after runingn the script, please understand it's not ready yet.
+
+```
+If you input the onnx model with the script, mcu_deploy.py, you will receive the message like below.
+Quantization to be needed at first.
+
+Found unsupported model files:
+  - C:\[working folder]\models_int8\*.onnx
+
+UNAVAILABLE: Feature not available yet. Direct deployment supports only FP32/INT8 .tflite.
+For .onnx or .pte, quantize with mcu_quantize.py first.
+```
 
 # How to deploy models  
 The sample script shows how to use the deployment API to compile an already quantized TFLite model on a board with Ethos-U55 support.  
 
-This release introduces some tested models. As the example model,we can download [ad01_int8.tflite](https://github.com/mlcommons/tiny/blob/master/benchmark/training/anomaly_detection/trained_models/ad01_int8.tflite) and [ad01_fp32.tflite](https://github.com/mlcommons/tiny/blob/master/benchmark/training/anomaly_detection/trained_models/ad01_fp32.tflite) from [MLCommons](https://github.com/mlcommons)    
+This release introduces some tested models. As the example model,we can download [ad01_int8.tflite](https://raw.githubusercontent.com/mlcommons/tiny/master/benchmark/training/anomaly_detection/trained_models/ad01_int8.tflite) and [ad01_fp32.tflite](https://raw.githubusercontent.com/mlcommons/tiny/master/benchmark/training/anomaly_detection/trained_models/ad01_fp32.tflite) from [MLCommons](https://github.com/mlcommons)    
 When runing the scripts provided in the repository, you shall build the folder configuration including each model.  
 
 The directory configuration for the sample scripts to run is below.
@@ -28,24 +47,24 @@ The directory configuration for the sample scripts to run is below.
   ├── models_fp32_ethos                                                                  // To be prepared
   |     └── ad01_fp32.tflite  // sample model to input to Quantizer from MLCommons
 ```
+>[!TIP]
+>If you see any warnings in the process below, you can refer [Tips](../doc/tips.md)
 
-**If you see any warnings in the process below, you can refer [Tips](../doc/tips.md)**
-
-## Deploy to CPU only   
+### Deploy to CPU only   
 By running the provided script **scripts/mcu_deploy.py**. we can compile the model for MCU only:  
 ```
-(.venv) PS C:\work> cd scripts/  
-(.venv) PS C:\work> python mcu_deploy.py --ref_data ../models_int8 deploy_qtzed  
+cd scripts/  
+python mcu_deploy.py --ref_data ../models_int8 deploy_qtzed  
 ```
 
-## Deploy to CPU with Ethos U55 supported    
+### Deploy to CPU with Ethos U55 supported    
 When enabling Ethos-U support:  
 ```
-(.venv) PS C:\work> cd scripts  
-(.venv) PS C:\work> python mcu_deploy.py --ethos --ref_data ../models_int8 deploy_qtzed_ethos  
+cd scripts  
+python mcu_deploy.py --ethos --ref_data ../models_int8 deploy_qtzed_ethos  
  ```
 
-## Check the deploy result
+### Check the deploy result
 
 you will get the following results:
 ```
@@ -104,21 +123,21 @@ The sample script with using the Quantizer can be refered.
 For an example model, the same model in FP32 shall be used [ad01_fp32.tflite](https://github.com/mlcommons/tiny/blob/master/benchmark/training/anomaly_detection/trained_models/ad01_fp32.tflite) from  [MLCommons](https://github.com/mlcommons)  
 
 
-## Deploy to CPU only   
+### Deploy to CPU only   
 
 To run the script:
 ```
-(.venv) PS C:\work> cd scripts/  
-(.venv) PS C:\work> python mcu_quantize.py ../models_fp32 deploy_mcu   
+cd scripts/  
+python mcu_quantize.py ../models_fp32 deploy_mcu   
 ```
 
-## Deploy to CPU with Ethos U55 supported   
+### Deploy to CPU with Ethos U55 supported   
 ```
-(.venv) PS C:\work> cd scripts/  
-(.venv) PS C:\work> python mcu_quantize.py -e ../models_fp32_ethos deploy_ethos  
+cd scripts/  
+python mcu_quantize.py -e ../models_fp32_ethos deploy_ethos  
 ```
 
-## Check the quantize and deploy result   
+### Check the quantize and deploy result   
 
 When Ethos-U support is enabled, each of the directories contain a deployment of the corresponding model for MCU + Ethos-U55 platform:  
 ```
