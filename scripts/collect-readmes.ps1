@@ -39,8 +39,11 @@ $copiedMd = 0
 $copiedImg = 0
 
 # --- 共通コピー関数 ---
-function Copy-Files([string]$basePath, [string[]]$patterns) {
-  param()
+function Copy-Files {
+  param(
+    [string]$basePath,
+    [string[]]$patterns
+  )
   foreach ($pattern in $patterns) {
     Get-ChildItem -Path $basePath -Recurse -File -Filter $pattern | ForEach-Object {
       $src = $_.FullName
