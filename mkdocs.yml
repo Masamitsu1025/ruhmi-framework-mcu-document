@@ -33,8 +33,8 @@ plugins:
    - search
 #   - linkcheck:
 #      fail_on_warning: true
-#   - git-revision-date-localized:
-#      enable_creation_date: true
+   - git-revision-date-localized:
+      enable_creation_date: true
 #   - htmlproofer:
 #      validate_external_urls: true
 #      raise_error: true
@@ -45,6 +45,7 @@ nav:
   - How to scripts: scripts/README.md
   - Handling optput source code: doc/runtime_api.md
   - API Reference: doc/mera_api.md
+  - Supported operators: doc/supported_operators.md
   - error list: doc/error_list.md
   - FAQ & Tips: doc/tips.md
 
