@@ -1,6 +1,9 @@
 # -----------------------------
 # MkDocs build artifacts
 # -----------------------------
+# MkDocs sources generated only in CI
+/docs/
+
 # MkDocs build output (generated site, not source)
 site/
 
