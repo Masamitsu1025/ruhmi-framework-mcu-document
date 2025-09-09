@@ -58,17 +58,17 @@ You might want to see the custermised method to quantize and to optimise your mo
 ## Support 
 
 ### Operator support 
-Please refer to the following [operators directory](/doc/operator_support.md) to understand what operators are supported by the framework.
+Please refer to the following [operators directory](doc/operator_support.md) to understand what operators are supported by the framework.
 
 ### Tips  
-If you see any warnings in the process of installation and running the sample scripts, you can refer [Tips](./doc/tips.md)  
+If you see any warnings in the process of installation and running the sample scripts, you can refer [Tips](doc/tips.md)  
 
 ### Limitation  
 There are some known constraints of the functions, Quatizer and C-Codegen.
-Please see [LIMITATIONS](./doc/LIMITATIONS.md).
+Please see [LIMITATIONS](doc/LIMITATIONS.md).
 
 ### Error List  
-If error occurred at compile/runtime operation, please refer [error list](./doc/error_list.md).  
+If error occurred at compile/runtime operation, please refer [error list](doc/error_list.md).  
 
 ### Enquiries  
 If you have any questions, please contact [Renesas Technical Support](https://www.renesas.com/support).  
