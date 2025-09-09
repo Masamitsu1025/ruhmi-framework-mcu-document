@@ -48,3 +48,5 @@ nav:
   - error list: error_list.md
   - FAQ & Tips: tips.md
 
+use_directory_urls: true
+
