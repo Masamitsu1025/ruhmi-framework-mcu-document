@@ -43,10 +43,10 @@ nav:
   - Home: README.md
   - Installation guide: install/README.md
   - How to scripts: scripts/README.md
-  - Handling optput source code: runtime_api.md
-  - API Reference: mera_api.md
-  - error list: error_list.md
-  - FAQ & Tips: tips.md
+  - Handling optput source code: doc/runtime_api.md
+  - API Reference: doc/mera_api.md
+  - error list: doc/error_list.md
+  - FAQ & Tips: doc/tips.md
 
 use_directory_urls: true
 
