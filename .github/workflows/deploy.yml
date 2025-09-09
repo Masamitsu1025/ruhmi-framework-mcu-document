@@ -34,7 +34,7 @@ jobs:
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           # あなたのスクリプト名に合わせてください（例：collect-all.ps1）
-          & "scripts\collect-all.ps1" -Clean
+          & "scripts\collect-readmes.ps1" -Clean
 
       # 生成結果をログに出す（確認用）
       - name: Show docs tree
