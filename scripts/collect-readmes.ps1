@@ -1,8 +1,6 @@
-/*
- docs/ は Actions 内で毎回生成（リポジトリにはコミットしない）
- 生成内容は ログに一覧表示（必要なら artifact でダウンロード可）
- その docs/ を元に MkDocs でビルド→gh-pages にデプロイ
-*/
+# docs/ は Actions 内で毎回生成（リポジトリにはコミットしない）
+# 生成内容は ログに一覧表示（必要なら artifact でダウンロード可）
+# その docs/ を元に MkDocs でビルド→gh-pages にデプロイ
 
 [CmdletBinding()]
 param(
