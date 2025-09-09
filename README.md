@@ -10,7 +10,7 @@ It also ships with Quantizer, a post-training static INT8 quantizer, allowing mo
 [^1]: RUHMI Framework is powered by EdgeCortix® MERA™.
 
 ## RUHMI Framework[^1] workflow
-![](docs/material/workflow_ruhmi.GIF)
+![](doc/material/workflow_ruhmi.GIF)
 
 ## Supported embedded platforms  
   • Renesas MCU RA8P1 series   
@@ -48,7 +48,7 @@ Example case:
 After processing a model, you will find several files on your deployment directory. This include some deploying artifacts generated during compilation that are worth to be kept around for debugging purposes.
 The most important output is found under the directory `<deployment_directory>build/MCU/compilation/src`. 
 This directory contains the model converted into a set of C99 source code files.
-You can refer to [Guide to the generated C source code](docs/runtime_api.md)
+You can refer to [Guide to the generated C source code](doc/runtime_api.md)
 
 
 ## AI model compiler API Specification  
@@ -58,17 +58,17 @@ You might want to see the custermised method to quantize and to optimise your mo
 ## Support 
 
 ### Operator support 
-Please refer to the following [operators directory](/docs/operator_support.md) to understand what operators are supported by the framework.
+Please refer to the following [operators directory](/doc/operator_support.md) to understand what operators are supported by the framework.
 
 ### Tips  
-If you see any warnings in the process of installation and running the sample scripts, you can refer [Tips](./docs/tips.md)  
+If you see any warnings in the process of installation and running the sample scripts, you can refer [Tips](./doc/tips.md)  
 
 ### Limitation  
 There are some known constraints of the functions, Quatizer and C-Codegen.
-Please see [LIMITATIONS](./docs/LIMITATIONS.md).
+Please see [LIMITATIONS](./doc/LIMITATIONS.md).
 
 ### Error List  
-If error occurred at compile/runtime operation, please refer [error list](./docs/error_list.md).  
+If error occurred at compile/runtime operation, please refer [error list](./doc/error_list.md).  
 
 ### Enquiries  
 If you have any questions, please contact [Renesas Technical Support](https://www.renesas.com/support).  
