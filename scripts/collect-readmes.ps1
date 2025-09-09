@@ -1,141 +1,94 @@
-<# 
-  collect-readmes.ps1
-  - リポジトリ内の README*.md を探索し、ファイル名を変えずに docs/ 配下へコピー
-  - 各 README と同じフォルダの画像も docs/ 配下へ相対パスを維持してコピー
-  - -Clean を付けると docs/ を削除してから再生成
-  - docs/ 自身や .git, node_modules 等は探索から除外（自己コピー/重量化の防止）
-#>
-
 [CmdletBinding()]
 param(
-  [string]$OutDir = "docs",
-  [switch]$Clean,
-  [string[]]$ReadmePatterns = @("*.md"),   # ← ディレクトリ下にあるすべての*.md
-  [string[]]$ImagePatterns  = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico"),
-  [switch]$FixLinks = $true   # ← 追加: ディレクトリリンク→README.md 補完
+  [string]$OutDir = "docs",                      # 出力先（MkDocs 既定）
+  [switch]$Clean,                                # 出力先を掃除してから実行
+  [string[]]$MdPatterns    = @("*.md"),          # 対象Markdown（既定: すべての .md）
+  [string[]]$ImagePatterns = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico"),
+  [switch]$IncludeRoot = $true                   # ルート直下のファイルも含める
 )
 
 $ErrorActionPreference = 'Stop'
 
-# --- Git ルートを特定（なければカレント） ---
-$gitRoot = (git rev-parse --show-toplevel) 2>$null
-if (-not $gitRoot) { $gitRoot = (Get-Location).Path }
-
+# --- 便利関数 ---
 function Get-Rel($base, $path) {
   $baseUri   = [Uri]((Resolve-Path $base).ProviderPath + [IO.Path]::DirectorySeparatorChar)
   $targetUri = [Uri]((Resolve-Path $path).ProviderPath)
   $rel = [Uri]::UnescapeDataString($baseUri.MakeRelativeUri($targetUri).ToString())
-  return $rel.Replace('/','\')
+  return $rel.Replace('/','\')  # Windows区切りに統一
 }
 
-# 除外トップレベル（自己コピー/重量化防止）
-$excludeTop = @(
-  [IO.Path]::GetFileName($OutDir), '.git', '.github', 'site',
-  '.venv', 'venv', 'node_modules', '.tox', '.pytest_cache', 'dist', 'build'
-)
+# --- Git ルート（なければカレント） ---
+$gitRoot = (git rev-parse --show-toplevel) 2>$null
+if (-not $gitRoot) { $gitRoot = (Get-Location).Path }
+$rootFull = (Resolve-Path $gitRoot).ProviderPath
 
-# 出力初期化
+# --- 出力初期化 ---
 if ($Clean -and (Test-Path $OutDir)) {
   Write-Host "Cleaning '$OutDir'..." -ForegroundColor Yellow
   Remove-Item -Recurse -Force $OutDir
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+$outFull = (Resolve-Path $OutDir).ProviderPath
 
-Write-Host "Collecting READMEs into '$OutDir'..." -ForegroundColor Cyan
+# 除外トップ（自己コピー/不要走査防止）
+$excludeTop = @([IO.Path]::GetFileName($OutDir), '.git', '.github', 'site', '.venv', 'venv', 'node_modules', 'dist', 'build')
 
-$gitRootFull = (Resolve-Path $gitRoot).ProviderPath
-$outDirFull  = (Resolve-Path $OutDir).ProviderPath
+Write-Host "Collecting from ROOT and ALL top-level folders -> '$OutDir' ..." -ForegroundColor Cyan
 
-$copiedReadmes = 0
-$copiedImages  = 0
+$copiedMd = 0
+$copiedImg = 0
 
-# --- README*.md を探索してコピー ---
-foreach ($pattern in $ReadmePatterns) {
-  Get-ChildItem -Path $gitRoot -Recurse -File -Filter $pattern | ForEach-Object {
-    $src = $_.FullName
+# --- 共通コピー関数 ---
+function Copy-Files([string]$basePath, [string[]]$patterns) {
+  param()
+  foreach ($pattern in $patterns) {
+    Get-ChildItem -Path $basePath -Recurse -File -Filter $pattern | ForEach-Object {
+      $src = $_.FullName
+      # 出力先配下のファイルはスキップ（自己コピー防止）
+      if ($src.StartsWith($outFull, [System.StringComparison]::OrdinalIgnoreCase)) { return }
 
-    # docs/ 配下や除外トップ直下はスキップ
-    $relFromRoot = Get-Rel $gitRoot $src
-    $top = ($relFromRoot -split '[\\/]')[0]
-    if ($excludeTop -contains $top) { return }
-    if ($src.StartsWith($outDirFull, [System.StringComparison]::OrdinalIgnoreCase)) { return }
+      $rel = Get-Rel $rootFull $src
+      $top = ($rel -split '[\\/]')[0]
+      if ($excludeTop -contains $top) { return }
 
-    $dst = Join-Path $OutDir $relFromRoot
-    New-Item -ItemType Directory -Force -Path (Split-Path $dst -Parent) | Out-Null
-    Copy-Item $src $dst -Force
-    $copiedReadmes++
-    Write-Host "✓ $relFromRoot -> $dst" -ForegroundColor Green
-
-    # 同階層の画像もコピー
-    $imgDir = Split-Path $src -Parent
-    if (Test-Path $imgDir) {
-      Get-ChildItem $imgDir -File -Include $ImagePatterns | ForEach-Object {
-        $imgRel = Get-Rel $gitRoot $_.FullName
-        $imgTop = ($imgRel -split '[\\/]')[0]
-        if ($excludeTop -contains $imgTop) { return }
-
-        $imgDst = Join-Path $OutDir $imgRel
-        New-Item -ItemType Directory -Force -Path (Split-Path $imgDst -Parent) | Out-Null
-        Copy-Item $_.FullName $imgDst -Force
-        $copiedImages++
-        Write-Host "    → image $imgRel" -ForegroundColor DarkGray
-      }
+      $dst = Join-Path $OutDir $rel
+      New-Item -ItemType Directory -Force -Path (Split-Path $dst -Parent) | Out-Null
+      Copy-Item $src $dst -Force
+      return $dst
     }
   }
 }
 
-# --- リンク補正: ディレクトリ参照 → README.md を補完 ---
-if ($FixLinks) {
-  Write-Host "Fixing relative links to subfolder README.md ..." -ForegroundColor Cyan
-
-  # 対象: docs/ 以下の .md
-  Get-ChildItem -Path $OutDir -Recurse -File -Filter "*.md" | ForEach-Object {
-    $p = $_.FullName
-    $content = Get-Content -Raw -Path $p
-
-    # 1) Markdownリンク: [text](relative/path[/])
-    $patternMd = '\[(?<txt>[^\]]+)\]\((?<url>[^)]+)\)'
-    $content = [regex]::Replace($content, $patternMd, {
-      param($m)
-      $txt = $m.Groups['txt'].Value
-      $url = $m.Groups['url'].Value.Trim()
-
-      # クオート除去
-      if ($url.StartsWith('"') -and $url.EndsWith('"')) { $url = $url.Trim('"') }
-      if ($url.StartsWith("'") -and $url.EndsWith("'")) { $url = $url.Trim("'") }
-
-      # 外部/アンカー/拡張子付き/画像等はスキップ
-      if ($url -match '^(https?:|mailto:|ftp:|data:|#)' ) { return $m.Value }
-      if ($url -match '\.(md|markdown|html?|png|jpe?g|gif|svg|webp|bmp|ico|pdf)$' ) { return $m.Value }
-
-      # 末尾が / のとき or 拡張子が無いとき → README.md を補完
-      if ($url -match '/$' -or $url -notmatch '\.[^/\\]+$') {
-        $new = ($url.TrimEnd('/')) + '/README.md'
-        return "[${txt}](${new})"
-      }
-
-      return $m.Value
-    }, 'IgnoreCase')
-
-    # 2) HTMLリンク: <a href="relative/path[/]">
-    $patternHtml = 'href\s*=\s*["''](?<url>[^"'']+)["'']'
-    $content = [regex]::Replace($content, $patternHtml, {
-      param($m)
-      $url = $m.Groups['url'].Value.Trim()
-
-      if ($url -match '^(https?:|mailto:|ftp:|data:|#)') { return $m.Value }
-      if ($url -match '\.(md|markdown|html?|png|jpe?g|gif|svg|webp|bmp|ico|pdf)$') { return $m.Value }
-
-      if ($url -match '/$' -or $url -notmatch '\.[^/\\]+$') {
-        $new = ($url.TrimEnd('/')) + '/README.md'
-        return 'href="' + $new + '"'
-      }
-
-      return $m.Value
-    }, 'IgnoreCase')
-
-    Set-Content -Path $p -Value $content -Encoding UTF8 -NoNewline
+# 1) ルート直下の *.md / 画像
+if ($IncludeRoot) {
+  # 直下のみ（再帰なし）で拾いたいときは -Recurse を外すが、ここは再帰でOK
+  foreach ($pattern in $MdPatterns) {
+    foreach ($dst in (Copy-Files -basePath $rootFull -patterns @($pattern))) {
+      if ($dst) { $copiedMd++ ; Write-Host "✓ MD   $(Get-Rel $OutDir $dst)" -ForegroundColor Green }
+    }
+  }
+  foreach ($pattern in $ImagePatterns) {
+    foreach ($dst in (Copy-Files -basePath $rootFull -patterns @($pattern))) {
+      if ($dst) { $copiedImg++; Write-Host "✓ IMG  $(Get-Rel $OutDir $dst)" -ForegroundColor DarkGray }
+    }
   }
 }
 
-Write-Host "Done. READMEs: $copiedReadmes, images: $copiedImages" -ForegroundColor Cyan
+# 2) ルート直下の全フォルダ配下
+$topFolders = Get-ChildItem -Path $rootFull -Directory | Where-Object { $_.Name -notin $excludeTop }
+foreach ($folder in $topFolders) {
+  Write-Host "Processing $($folder.Name) ..." -ForegroundColor Yellow
+
+  foreach ($pattern in $MdPatterns) {
+    foreach ($dst in (Copy-Files -basePath $folder.FullName -patterns @($pattern))) {
+      if ($dst) { $copiedMd++ ; Write-Host "✓ MD   $(Get-Rel $OutDir $dst)" -ForegroundColor Green }
+    }
+  }
+  foreach ($pattern in $ImagePatterns) {
+    foreach ($dst in (Copy-Files -basePath $folder.FullName -patterns @($pattern))) {
+      if ($dst) { $copiedImg++; Write-Host "✓ IMG  $(Get-Rel $OutDir $dst)" -ForegroundColor DarkGray }
+    }
+  }
+}
+
+Write-Host "Done. Copied: MD=$copiedMd, IMG=$copiedImg" -ForegroundColor Cyan
