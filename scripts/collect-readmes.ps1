@@ -11,7 +11,8 @@ param(
   [string]$OutDir = "docs",
   [switch]$Clean,
   [string[]]$ReadmePatterns = @("README*.md"),
-  [string[]]$ImagePatterns  = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico")
+  [string[]]$ImagePatterns  = @("*.png","*.jpg","*.jpeg","*.gif","*.svg","*.webp","*.bmp","*.ico"),
+  [switch]$FixLinks = $true   # ← 追加: ディレクトリリンク→README.md 補完
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,7 +21,6 @@ $ErrorActionPreference = 'Stop'
 $gitRoot = (git rev-parse --show-toplevel) 2>$null
 if (-not $gitRoot) { $gitRoot = (Get-Location).Path }
 
-# 相対パス作成（.. を含まない安定版）
 function Get-Rel($base, $path) {
   $baseUri   = [Uri]((Resolve-Path $base).ProviderPath + [IO.Path]::DirectorySeparatorChar)
   $targetUri = [Uri]((Resolve-Path $path).ProviderPath)
@@ -28,7 +28,7 @@ function Get-Rel($base, $path) {
   return $rel.Replace('/','\')
 }
 
-# 除外トップレベル（自己コピー防止 & 高速化）
+# 除外トップレベル（自己コピー/重量化防止）
 $excludeTop = @(
   [IO.Path]::GetFileName($OutDir), '.git', '.github', 'site',
   '.venv', 'venv', 'node_modules', '.tox', '.pytest_cache', 'dist', 'build'
@@ -49,18 +49,17 @@ $outDirFull  = (Resolve-Path $OutDir).ProviderPath
 $copiedReadmes = 0
 $copiedImages  = 0
 
-# --- README*.md を探索してコピー（Filter で高速化） ---
+# --- README*.md を探索してコピー ---
 foreach ($pattern in $ReadmePatterns) {
   Get-ChildItem -Path $gitRoot -Recurse -File -Filter $pattern | ForEach-Object {
     $src = $_.FullName
 
-    # docs/ 配下や除外トップ直下はスキップ（自己コピー/不要コピー防止）
+    # docs/ 配下や除外トップ直下はスキップ
     $relFromRoot = Get-Rel $gitRoot $src
     $top = ($relFromRoot -split '[\\/]')[0]
     if ($excludeTop -contains $top) { return }
     if ($src.StartsWith($outDirFull, [System.StringComparison]::OrdinalIgnoreCase)) { return }
 
-    # 出力先へ（ファイル名はそのまま、リネームしない）
     $dst = Join-Path $OutDir $relFromRoot
     New-Item -ItemType Directory -Force -Path (Split-Path $dst -Parent) | Out-Null
     Copy-Item $src $dst -Force
@@ -82,6 +81,60 @@ foreach ($pattern in $ReadmePatterns) {
         Write-Host "    → image $imgRel" -ForegroundColor DarkGray
       }
     }
+  }
+}
+
+# --- リンク補正: ディレクトリ参照 → README.md を補完 ---
+if ($FixLinks) {
+  Write-Host "Fixing relative links to subfolder README.md ..." -ForegroundColor Cyan
+
+  # 対象: docs/ 以下の .md
+  Get-ChildItem -Path $OutDir -Recurse -File -Filter "*.md" | ForEach-Object {
+    $p = $_.FullName
+    $content = Get-Content -Raw -Path $p
+
+    # 1) Markdownリンク: [text](relative/path[/])
+    $patternMd = '\[(?<txt>[^\]]+)\]\((?<url>[^)]+)\)'
+    $content = [regex]::Replace($content, $patternMd, {
+      param($m)
+      $txt = $m.Groups['txt'].Value
+      $url = $m.Groups['url'].Value.Trim()
+
+      # クオート除去
+      if ($url.StartsWith('"') -and $url.EndsWith('"')) { $url = $url.Trim('"') }
+      if ($url.StartsWith("'") -and $url.EndsWith("'")) { $url = $url.Trim("'") }
+
+      # 外部/アンカー/拡張子付き/画像等はスキップ
+      if ($url -match '^(https?:|mailto:|ftp:|data:|#)' ) { return $m.Value }
+      if ($url -match '\.(md|markdown|html?|png|jpe?g|gif|svg|webp|bmp|ico|pdf)$' ) { return $m.Value }
+
+      # 末尾が / のとき or 拡張子が無いとき → README.md を補完
+      if ($url -match '/$' -or $url -notmatch '\.[^/\\]+$') {
+        $new = ($url.TrimEnd('/')) + '/README.md'
+        return "[${txt}](${new})"
+      }
+
+      return $m.Value
+    }, 'IgnoreCase')
+
+    # 2) HTMLリンク: <a href="relative/path[/]">
+    $patternHtml = 'href\s*=\s*["''](?<url>[^"'']+)["'']'
+    $content = [regex]::Replace($content, $patternHtml, {
+      param($m)
+      $url = $m.Groups['url'].Value.Trim()
+
+      if ($url -match '^(https?:|mailto:|ftp:|data:|#)') { return $m.Value }
+      if ($url -match '\.(md|markdown|html?|png|jpe?g|gif|svg|webp|bmp|ico|pdf)$') { return $m.Value }
+
+      if ($url -match '/$' -or $url -notmatch '\.[^/\\]+$') {
+        $new = ($url.TrimEnd('/')) + '/README.md'
+        return 'href="' + $new + '"'
+      }
+
+      return $m.Value
+    }, 'IgnoreCase')
+
+    Set-Content -Path $p -Value $content -Encoding UTF8 -NoNewline
   }
 }
 
