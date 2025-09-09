@@ -1,2 +1,2 @@
 mkdocs-material
-mkdocs-htmlproofer-plugin
+git-revision-date-localized
