@@ -5,7 +5,7 @@ site_description: Comprehensive technical documentation for My Project
 site_author: Masamitsu Muratani
 
 theme:
-  name: material
+  name: readthedocs
   palette:
     - scheme: default
       primary: indigo
