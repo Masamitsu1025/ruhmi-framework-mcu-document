@@ -2,6 +2,8 @@
 
 # RUHMI (Robust Unified Heterogeneous Model Integration) is a framework for AI model optimization and deployment, powered by EdgeCortix® MERA.
 
+test 0910
+
 ## Introduction
 RUHMI Framework[^1] povide a compiler and the necessary tools to convert machine learning models into C source code compatible with range of Renesas MCUs powered by Arm Ethos-U NPUs.
 The software stack generates C source code while ensuring compatibility and tight integration the with Renesas e2 studio.
