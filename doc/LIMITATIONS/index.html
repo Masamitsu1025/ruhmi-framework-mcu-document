@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Masamitsu Muratani" /><link rel="canonical" href="https://Masamitsu1025.github.io/ruhmi-framework-mcu-document/doc/LIMITATIONS/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>MERA 2.4.0 based limitations - ruhmi-framework-mcu-documents</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "MERA 2.4.0 based limitations";
+        var mkdocs_page_input_path = "doc\\LIMITATIONS.md";
+        var mkdocs_page_url = "/ruhmi-framework-mcu-document/doc/LIMITATIONS/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> ruhmi-framework-mcu-documents
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../install/">Installation guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../scripts/">How to scripts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runtime_api/">Handling optput source code</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../mera_api/">API Reference</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../operator_support/">Supported operators</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error_list/">error list</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tips/">FAQ & Tips</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">ruhmi-framework-mcu-documents</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">MERA 2.4.0 based limitations</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mera-240-based-limitations">MERA 2.4.0 based limitations</h1>
+<p>There are some known constraints and boundaries of the system. <br />
+While designed to address a wide range of use cases, certain technical, operational, or design limitations may apply. Understanding these limitations ensures optimal deployment and helps guide workarounds or future enhancements.</p>
+<ul>
+<li><a href="#Quantizer-Limitations">Quantizer Limitations</a>  </li>
+<li><a href="#C-Codegen-Limitations">C-Codegen Limitations</a>  </li>
+</ul>
+<h2 id="quantizer-limitations">Quantizer Limitations</h2>
+<p>Below is a table of different operators and the Quantizer support for each of them. Depending on the target (MCU_CPU or MCU_ETHOS) different types could be available based on the fatures of C-Codegen and/or Vela.
+Other operators are not supported for quantization, those are marked with X.</p>
+<p>Table 1: Quantizer Operator Support</p>
+<table>
+<thead>
+<tr>
+<th>Operator Name</th>
+<th>MCU_CPU</th>
+<th>MCU_ETHOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conv2d</td>
+<td>A8W8</td>
+<td>A8W8</td>
+</tr>
+<tr>
+<td>ConvTranspose</td>
+<td>A8W8</td>
+<td>A8W8</td>
+</tr>
+<tr>
+<td>Gemm</td>
+<td>A8W8</td>
+<td>A8W8</td>
+</tr>
+<tr>
+<td>Add</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Sub</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Mul</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Mul [ONNX]</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Div</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>ReLU</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>HardSwish</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>HardSigmoid</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>LeakyReLU</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>MaxPool</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>AveragePool</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Softmax</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Reshape</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Squeeze</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>ConvertLayout</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Concatenate</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Slice</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>BatchNorm</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Clip</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Tanh</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Sigmoid</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Sigmoid [ONNX]</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Silu (HSwish)</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Minimum</td>
+<td>F32</td>
+<td>F32</td>
+</tr>
+<tr>
+<td>Maximum</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>ReduceMax</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>ReduceMean</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>ReduceSum</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Pack</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Resize2d</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>PReLU</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Pad</td>
+<td>A8</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>MirrorPad</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>PadV2</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>F32</td>
+<td>F32</td>
+</tr>
+<tr>
+<td>Neg</td>
+<td>F32</td>
+<td>F32</td>
+</tr>
+<tr>
+<td>Exp</td>
+<td>F32</td>
+<td>A8</td>
+</tr>
+<tr>
+<td>Abs</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Sqrt</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>FloorDiv</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>ArgMax</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>GatherNd</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>RSqrt</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>SquaredDifference</td>
+<td>X</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c-codegen-limitations">C-Codegen Limitations</h2>
+<p>• tfl.concatenation (TFL::ConcatenationOp) Only supports up to 4 dimensional inputs.  </p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

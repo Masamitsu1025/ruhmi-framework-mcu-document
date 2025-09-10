@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Masamitsu Muratani" /><link rel="canonical" href="https://Masamitsu1025.github.io/ruhmi-framework-mcu-document/doc/tips/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>FAQ & Tips - ruhmi-framework-mcu-documents</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "FAQ \u0026 Tips";
+        var mkdocs_page_input_path = "doc\\tips.md";
+        var mkdocs_page_url = "/ruhmi-framework-mcu-document/doc/tips/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> ruhmi-framework-mcu-documents
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../install/">Installation guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../scripts/">How to scripts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runtime_api/">Handling optput source code</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../mera_api/">API Reference</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../operator_support/">Supported operators</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error_list/">error list</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">FAQ & Tips</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#linux-glibcxx_3432-not-found-occered-at-running-the-script-like-python-mcu_deploypy-ethos-ref_data-models_int8-deploy_qtzed_ethos">[Linux] GLIBCXX_3.4.32' not found occered at running the script like "python mcu_deploy.py --ethos --ref_data ../models_int8 deploy_qtzed_ethos"</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-tflitemodel_000_ad01_fp32errorcommand-cmake-dbuild_py_bindingson-returned-non-zero-exit-status-1">[Linux] .tflite,model_000_ad01_fp32,Error,Command '['cmake', '-DBUILD_PY_BINDINGS=ON', '..']' returned non-zero exit status 1.</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linux-cmake-error-at-cmakeliststxt1-cmake_minimum_required">[Linux] CMake Error at CMakeLists.txt:1 (cmake_minimum_required):</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">ruhmi-framework-mcu-documents</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">FAQ & Tips</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="if-you-see-some-warning-at-running-the-sample-scripts-you-can-refer-the-tips-below-depending-on-the-message-in-display">If you see some warning at running the sample scripts, you can refer the tips below depending on the message in display.</h2>
+<p><strong>[Linux]   For Linux version</strong><br />
+<strong>[Winows]  For Windows version</strong>  </p>
+<h3 id="linux-glibcxx_3432-not-found-occered-at-running-the-script-like-python-mcu_deploypy-ethos-ref_data-models_int8-deploy_qtzed_ethos"><strong>[Linux]</strong> <code>GLIBCXX_3.4.32' not found</code> occered at running the script like "python mcu_deploy.py --ethos --ref_data ../models_int8 deploy_qtzed_ethos"</h3>
+<p>Run the following commands for upgrading the stdc library to an actual version:</p>
+<pre><code>sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install libstdc++6 libgcc-s1
+</code></pre>
+<p>For installation clean up run the following after the above step is finished:</p>
+<pre><code>sudo apt-get upgrade
+sudo apt-get dist-upgrade
+</code></pre>
+<h3 id="linux-tflitemodel_000_ad01_fp32errorcommand-cmake-dbuild_py_bindingson-returned-non-zero-exit-status-1"><strong>[Linux]</strong> .tflite,model_000_ad01_fp32,Error,Command '['cmake', '-DBUILD_PY_BINDINGS=ON', '..']' returned non-zero exit status 1.</h3>
+<p>This issue comes from the version of cmake.
+Please follow the next topic.</p>
+<h3 id="linux-cmake-error-at-cmakeliststxt1-cmake_minimum_required"><strong>[Linux]</strong> CMake Error at CMakeLists.txt:1 (cmake_minimum_required):</h3>
+<p>CMake 3.24 or higher is required.  You are running version 3.22.1
+  In order to install any higher version, you can refer to below steps.</p>
+<pre><code>$ cmake --version  # Confirm the current version
+$ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2&gt;/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg &gt;/dev/null
+$ sudo apt-add-repository &quot;deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main&quot;
+$ sudo apt update
+$ sudo apt install cmake
+$ cmake --version   # Check the updated version, to be revised.
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../error_list/" class="btn btn-neutral float-left" title="error list"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../error_list/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

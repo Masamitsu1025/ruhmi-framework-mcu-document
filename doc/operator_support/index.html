@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Masamitsu Muratani" /><link rel="canonical" href="https://Masamitsu1025.github.io/ruhmi-framework-mcu-document/doc/operator_support/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Supported operators - ruhmi-framework-mcu-documents</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Supported operators";
+        var mkdocs_page_input_path = "doc\\operator_support.md";
+        var mkdocs_page_url = "/ruhmi-framework-mcu-document/doc/operator_support/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> ruhmi-framework-mcu-documents
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../install/">Installation guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../scripts/">How to scripts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runtime_api/">Handling optput source code</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../mera_api/">API Reference</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Supported operators</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error_list/">error list</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tips/">FAQ & Tips</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">ruhmi-framework-mcu-documents</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Supported operators</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="operator-support">Operator support</h2>
+<p>Currently, RUHMI framework is backed by MERA compiler powered by EdgeCortix. </p>
+<p>The compiler accepts models from various frameworks such as Executorch (.pte), Tensorflow lite (.tflite) and ONNX (.onnx). Which are then lowered down to TFlite dialect that c-code gen is built upon. The tables below represent what operators are supported from each framework and finally to what operator it would be lowered down to.</p>
+<blockquote>
+<p><strong>Note:</strong> The compiler processes inputted model differently according to selected platform and target and not every combination of support should be expected for every operator in the list.</p>
+</blockquote>
+<h2 id="tensorflow-lite-front-end-operator-support">TensorFlow lite front-end operator support</h2>
+<table>
+<thead>
+<tr>
+<th>TFL Operation</th>
+<th>TFL Op Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tfl.abs</td>
+<td>TFL::AbsOp</td>
+</tr>
+<tr>
+<td>tfl.quantize</td>
+<td>TFL::QuantizeOp</td>
+</tr>
+<tr>
+<td>tfl.add</td>
+<td>TFL::AddOp</td>
+</tr>
+<tr>
+<td>tfl.reduce_max</td>
+<td>TFL::ReduceMaxOp</td>
+</tr>
+<tr>
+<td>tfl.average_pool_2d</td>
+<td>TFL::AveragePool2DOp</td>
+</tr>
+<tr>
+<td>tfl.relu</td>
+<td>TFL::ReluOp</td>
+</tr>
+<tr>
+<td>tfl.batch_to_space_nd</td>
+<td>TFL::BatchToSpaceNdOp</td>
+</tr>
+<tr>
+<td>tfl.relu6</td>
+<td>TFL::Relu6Op</td>
+</tr>
+<tr>
+<td>tfl.concatenation</td>
+<td>TFL::ConcatenationOp</td>
+</tr>
+<tr>
+<td>tfl.reshape</td>
+<td>TFL::ReshapeOp</td>
+</tr>
+<tr>
+<td>tfl.conv_2d</td>
+<td>TFL::Conv2DOp</td>
+</tr>
+<tr>
+<td>tfl.resize_bilinear</td>
+<td>TFL::ResizeBilinearOp</td>
+</tr>
+<tr>
+<td>tfl.depthwise_conv_2d</td>
+<td>TFL::DepthwiseConv2DOp</td>
+</tr>
+<tr>
+<td>tfl.resize_nearest_neighbor</td>
+<td>TFL::ResizeNearestNeighborOp</td>
+</tr>
+<tr>
+<td>tfl.dequantize</td>
+<td>TFL::DequantizeOp</td>
+</tr>
+<tr>
+<td>tfl.rsqrt</td>
+<td>TFL::RsqrtOp</td>
+</tr>
+<tr>
+<td>tfl.exp</td>
+<td>TFL::ExpOp</td>
+</tr>
+<tr>
+<td>tfl.slice</td>
+<td>TFL::SliceOp</td>
+</tr>
+<tr>
+<td>tfl.expand_dims</td>
+<td>TFL::ExpandDimsOp</td>
+</tr>
+<tr>
+<td>tfl.softmax</td>
+<td>TFL::SoftmaxOp</td>
+</tr>
+<tr>
+<td>tfl.fully_connected</td>
+<td>TFL::FullyConnectedOp</td>
+</tr>
+<tr>
+<td>tfl.space_to_batch_nd</td>
+<td>TFL::SpaceToBatchNdOp</td>
+</tr>
+<tr>
+<td>tfl.hard_swish</td>
+<td>TFL::HardSwishOp</td>
+</tr>
+<tr>
+<td>tfl.split</td>
+<td>TFL::SplitOp</td>
+</tr>
+<tr>
+<td>tfl.leaky_relu</td>
+<td>TFL::LeakyReluOp</td>
+</tr>
+<tr>
+<td>tfl.split_v</td>
+<td>TFL::SplitVOp</td>
+</tr>
+<tr>
+<td>tfl.log</td>
+<td>TFL::LogOp</td>
+</tr>
+<tr>
+<td>tfl.sqrt</td>
+<td>TFL::SqrtOp</td>
+</tr>
+<tr>
+<td>tfl.log_softmax</td>
+<td>TFL::LogSoftmaxOp</td>
+</tr>
+<tr>
+<td>tfl.squared_difference</td>
+<td>TFL::SquaredDifferenceOp</td>
+</tr>
+<tr>
+<td>tfl.logistic</td>
+<td>TFL::LogisticOp</td>
+</tr>
+<tr>
+<td>tfl.strided_slice</td>
+<td>TFL::StridedSliceOp</td>
+</tr>
+<tr>
+<td>tfl.max_pool_2d</td>
+<td>TFL::MaxPool2DOp</td>
+</tr>
+<tr>
+<td>tfl.sub</td>
+<td>TFL::SubOp</td>
+</tr>
+<tr>
+<td>tfl.mean</td>
+<td>TFL::MeanOp</td>
+</tr>
+<tr>
+<td>tfl.sum</td>
+<td>TFL::SumOp</td>
+</tr>
+<tr>
+<td>tfl.minimum</td>
+<td>TFL::MinimumOp</td>
+</tr>
+<tr>
+<td>tfl.tanh</td>
+<td>TFL::TanhOp</td>
+</tr>
+<tr>
+<td>tfl.mirror_pad</td>
+<td>TFL::MirrorPadOp</td>
+</tr>
+<tr>
+<td>tfl.transpose</td>
+<td>TFL::TransposeOp</td>
+</tr>
+<tr>
+<td>tfl.mul</td>
+<td>TFL::MulOp</td>
+</tr>
+<tr>
+<td>tfl.transpose_conv</td>
+<td>TFL::TransposeConvOp</td>
+</tr>
+<tr>
+<td>tfl.neg</td>
+<td>TFL::NegOp</td>
+</tr>
+<tr>
+<td>tfl.unpack</td>
+<td>TFL::UnpackOp</td>
+</tr>
+<tr>
+<td>tfl.pack</td>
+<td>TFL::PackOp</td>
+</tr>
+<tr>
+<td>tfl.pad</td>
+<td>TFL::PadOp</td>
+</tr>
+<tr>
+<td>tfl.padv2</td>
+<td>TFL::PadV2Op</td>
+</tr>
+<tr>
+<td>tfl.pow</td>
+<td>TFL::PowOp</td>
+</tr>
+<tr>
+<td>tfl.prelu</td>
+<td>TFL::PReluOp</td>
+</tr>
+</tbody>
+</table>
+<p>As a note:<br />
+<strong>TFL Operation</strong>: This is the name of the operation as it appears in TensorFlow Lite models. It’s what you’ll see in model files or when inspecting the graph structure.<br />
+<strong>TFL Op Class</strong>: This is the internal class name used in the TensorFlow Lite codebase (specifically in MLIR). It defines how the operation is implemented and processed during model conversion or optimization. Think of it as the backend implementation of the operation.</p>
+<blockquote>
+<p><strong>Limitation:</strong> <strong>tfl.concatenation (TFL::ConcatenationOp)</strong> only supports up to 4 dimensional inputs.</p>
+</blockquote>
+<h2 id="onnx-front-end-operator-support">ONNX front-end operator support</h2>
+<table>
+<thead>
+<tr>
+<th>ONNX Operators</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add</td>
+<td>ArgMax</td>
+<td>AveragePool</td>
+</tr>
+<tr>
+<td>BatchNormalization</td>
+<td>Cast</td>
+<td>Clip</td>
+</tr>
+<tr>
+<td>Concat</td>
+<td>Constant</td>
+<td>Conv</td>
+</tr>
+<tr>
+<td>ConvTranspose</td>
+<td>Cos</td>
+<td>CumSum</td>
+</tr>
+<tr>
+<td>DepthToSpace</td>
+<td>Div</td>
+<td>Equal</td>
+</tr>
+<tr>
+<td>Erf</td>
+<td>Exp</td>
+<td>Expand</td>
+</tr>
+<tr>
+<td>Flatten</td>
+<td>Gather</td>
+<td>Gemm</td>
+</tr>
+<tr>
+<td>GlobalAveragePool</td>
+<td>HardSigmoid</td>
+<td>HardSwish</td>
+</tr>
+<tr>
+<td>InstanceNormalization</td>
+<td>LayerNormalization</td>
+<td>LeakyRelu</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>LRN</td>
+<td>MatMul</td>
+</tr>
+<tr>
+<td>Max</td>
+<td>MaxPool</td>
+<td>Mul</td>
+</tr>
+<tr>
+<td>Neg</td>
+<td>Not</td>
+<td>Pad</td>
+</tr>
+<tr>
+<td>Pow</td>
+<td>PRelu</td>
+<td>RandomNormalLike</td>
+</tr>
+<tr>
+<td>ReduceL2</td>
+<td>ReduceMax</td>
+<td>ReduceMean</td>
+</tr>
+<tr>
+<td>ReduceSum</td>
+<td>Relu</td>
+<td>Reshape</td>
+</tr>
+<tr>
+<td>Resize</td>
+<td>ScatterND</td>
+<td>Shape</td>
+</tr>
+<tr>
+<td>Sigmoid</td>
+<td>Sin</td>
+<td>Slice</td>
+</tr>
+<tr>
+<td>Softmax</td>
+<td>SpaceToDepth</td>
+<td>Split</td>
+</tr>
+<tr>
+<td>Sqrt</td>
+<td>Squeeze</td>
+<td>Sub</td>
+</tr>
+<tr>
+<td>Sum</td>
+<td>Tanh</td>
+<td>TopK</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>Unsqueeze</td>
+<td>Upsample</td>
+</tr>
+<tr>
+<td>Where</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="executorchpytorch-front-end-operator-support">Executorch/Pytorch front-end operator support</h2>
+<table>
+<thead>
+<tr>
+<th>Executorch Operators</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aten::addmm.out</td>
+<td>aten::eq.Tensor_out</td>
+<td>aten::sigmoid.out</td>
+</tr>
+<tr>
+<td>aten::add.out</td>
+<td>aten::expand_copy.out</td>
+<td>aten::sin.out</td>
+</tr>
+<tr>
+<td>aten::alias_copy.out</td>
+<td>aten::full_like.out</td>
+<td>aten::slice_copy.Tensor_out</td>
+</tr>
+<tr>
+<td>aten::any.out</td>
+<td>aten::gelu.out</td>
+<td>aten::_softmax.out</td>
+</tr>
+<tr>
+<td>aten::arange.start_out</td>
+<td>aten::hardtanh.out</td>
+<td>aten::split_with_sizes_copy.out</td>
+</tr>
+<tr>
+<td>aten::as_strided_copy.out</td>
+<td>aten::index.Tensor_out</td>
+<td>aten::squeeze_copy.dims_out</td>
+</tr>
+<tr>
+<td>aten::avg_pool2d.out</td>
+<td>aten::logical_not.out</td>
+<td>aten::sub.out</td>
+</tr>
+<tr>
+<td>aten::bmm.out</td>
+<td>aten::max_pool2d_with_indices.out</td>
+<td>aten::_to_copy.out</td>
+</tr>
+<tr>
+<td>aten::cat.out</td>
+<td>aten::mean.out</td>
+<td>aten::unsqueeze_copy.out</td>
+</tr>
+<tr>
+<td>aten::clamp.out</td>
+<td>aten::mm.out</td>
+<td>aten::upsample_bilinear2d.vec_out</td>
+</tr>
+<tr>
+<td>aten::clone.out</td>
+<td>aten::mul.out</td>
+<td>aten::upsample_nearest2d.vec_out</td>
+</tr>
+<tr>
+<td>aten::constant_pad_nd.out</td>
+<td>aten::mul.Scalar_out</td>
+<td>aten::view_copy.out</td>
+</tr>
+<tr>
+<td>aten::convolution.out</td>
+<td>aten::_native_batch_norm_legit_no_training.out</td>
+<td>aten::where.self_out</td>
+</tr>
+<tr>
+<td>aten::cos.out</td>
+<td>aten::native_layer_norm.out</td>
+<td>dim_order_ops::_to_dim_order_copy.out</td>
+</tr>
+<tr>
+<td>aten::div.out</td>
+<td>aten::permute_copy.out</td>
+<td>executorch_prim::et_view.default</td>
+</tr>
+<tr>
+<td>aten::eq.Scalar_out</td>
+<td>aten::relu.out</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="c99-code-gen-operator-support">C99 Code-gen operator support</h2>
+<p>The operator support on the embedded devices are provided in the table below. The codegen relies on microcontroller technologies that relies heavily on tensorflow lite and tensorflow lite kernels as a reference.<br />
+MERA compiler import operators from other frameworks such as ONNX and Executorch and will eventually lower the operators into the below TFlite dialect. </p>
+<blockquote>
+<p><strong>Note :</strong> ONNX and PyTorch Frontends are currently only meant to be used with Quantizer flow. </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>TFLite Operators</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TFLiteAbs</td>
+<td>TFLiteMirrorPad</td>
+<td>TFLiteResizeNearest</td>
+</tr>
+<tr>
+<td>TFLiteBatchToSpaceNd</td>
+<td>TFLiteMul</td>
+<td>TFLiteSigmoid</td>
+</tr>
+<tr>
+<td>TFLiteConcatenate</td>
+<td>TFLiteNeg</td>
+<td>TFLiteSlice</td>
+</tr>
+<tr>
+<td>TFLiteDequantize</td>
+<td>TFLitePack</td>
+<td>TFLiteSoftmax</td>
+</tr>
+<tr>
+<td>TFLiteExp</td>
+<td>TFLitePad</td>
+<td>TFLiteSpaceToBatchNd</td>
+</tr>
+<tr>
+<td>TFLiteFullyConnected</td>
+<td>TFLitePadV2</td>
+<td>TFLiteSquaredDifference</td>
+</tr>
+<tr>
+<td>TFLiteFullyConnectedBias</td>
+<td>TFLitePRelu</td>
+<td>TFLiteStridedSlice</td>
+</tr>
+<tr>
+<td>TFLiteHardSwish</td>
+<td>TFLiteQAdd</td>
+<td>TFLiteSub</td>
+</tr>
+<tr>
+<td>TFLiteLeakyReLU</td>
+<td>TFLiteQConv2d</td>
+<td>TFLiteSum</td>
+</tr>
+<tr>
+<td>TFLiteLog</td>
+<td>TFLiteQuantize</td>
+<td>TFLiteTanh</td>
+</tr>
+<tr>
+<td>TFLiteLogSoftmax</td>
+<td>TFLiteReduceMax</td>
+<td>TFLiteTranspose</td>
+</tr>
+<tr>
+<td>TFLiteMaxPool</td>
+<td>TFLiteRelu</td>
+<td>TFLiteTransposeConv2d</td>
+</tr>
+<tr>
+<td>TFLiteMean</td>
+<td>TFLiteRelu6</td>
+<td></td>
+</tr>
+<tr>
+<td>TFLiteMinimum</td>
+<td>TFLiteResizeBilinear</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../mera_api/" class="btn btn-neutral float-left" title="API Reference"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../error_list/" class="btn btn-neutral float-right" title="error list">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../mera_api/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../error_list/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
