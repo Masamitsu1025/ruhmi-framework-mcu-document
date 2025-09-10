@@ -45,7 +45,7 @@ nav:
   - How to scripts: scripts/README.md
   - Handling optput source code: doc/runtime_api.md
   - API Reference: doc/mera_api.md
-  - Supported operators: doc/supported_operators.md
+  - Supported operators: doc/operator_support.md
   - error list: doc/error_list.md
   - FAQ & Tips: doc/tips.md
 
